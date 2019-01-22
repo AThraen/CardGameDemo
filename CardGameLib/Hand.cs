@@ -13,5 +13,9 @@ namespace CardGameLib
             return Cards.GroupBy(c => c.Suit).OrderByDescending(grp => grp.Sum(c => c.Value)).First().Sum(c => c.Value);
         }
         
+        public static string ToListString(this IEnumerable<Card> Cards)
+        {
+            return string.Join(',', Cards);
+        }
     }
 }

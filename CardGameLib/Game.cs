@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace CardGameLib
 {
 
     /// <summary>
-    /// Extremely simple version of 31. This time without the "Knock" element, for simplicity. Simple: Only action possible: replace card. First to get 31 wins.
+    /// Extremely simple version of 31. This time without the "Call" element, for simplicity. Simple: Only action possible: replace card - either from Table or from Deck. First to get 31 wins.
     /// </summary>
 
     public class Game
@@ -20,12 +21,36 @@ namespace CardGameLib
 
         public int CurrentTurn { get; set; }
 
+        public bool GameOver { get; set; }
+
+        public Player Winner { get; set; }
+
         public Game()
         {
         }
 
-        public void Play()
+        public string SerializeGame()
         {
+            return JsonConvert.SerializeObject(this);
+        }
+        
+        public void NextTurn()
+        {
+            Players[CurrentTurn].Turn();
+            if (Players[CurrentTurn].Hand.CalculateScore() == 31)
+            {
+                Winner = Players[CurrentTurn];
+                GameOver = true;
+            }
+
+            CurrentTurn++;
+            if (CurrentTurn >= Players.Length) CurrentTurn = 0;
+        }
+
+        public void InitialDeal()
+        {
+            GameOver = false;
+            Winner = null;
             CurrentTurn = 0;
             //Deal
             foreach(var p in Players)
@@ -34,20 +59,6 @@ namespace CardGameLib
             }
             Table.Add(Deck.DrawCard());
 
-            //Play the game!
-            string winner = null;
-            while (winner == null)
-            {
-                Console.WriteLine($"{Players[CurrentTurn].Name} turn!");
-                Players[CurrentTurn].Turn();
-                if (Players[CurrentTurn].Hand.CalculateScore() == 31)
-                {
-                    winner = Players[CurrentTurn].Name;
-                }
-                CurrentTurn++;
-                if (CurrentTurn >= Players.Length) CurrentTurn = 0;
-            }
-            Console.WriteLine($"--- GAME OVER, {winner} WON! ---");
         }
 
         public Game(Random R,params Player[] Players)

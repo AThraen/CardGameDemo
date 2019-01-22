@@ -6,7 +6,7 @@ namespace CardGameLib
 {
     public class Deck
     {
-        private List<Card> Cards { get; set; }
+        public List<Card> Cards { get; set; }
 
         public int CardsLeft {
             get

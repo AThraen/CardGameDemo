@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace CardGameLib
 {
@@ -14,6 +15,7 @@ namespace CardGameLib
 
         public abstract void Turn(); //0,1,2 = replace card
 
+        [JsonIgnore]
         public Game Game { get; set; }
 
         public Player()
@@ -50,6 +52,7 @@ namespace CardGameLib
     {
         private Random R;
 
+        public event Action<Card> Done;
 
         public ComputerPlayer(Random R, string Name) : base(Name)
         {
@@ -67,6 +70,8 @@ namespace CardGameLib
             }
             int idx = Hand.IndexOf(lst.OrderByDescending(l => l.Item2).First().Item1);
             DropCard(idx);
+            //Invoking Done event with the card we dropped
+            Done?.Invoke(lst.OrderByDescending(l => l.Item2).First().Item1);
         }
     }
 }

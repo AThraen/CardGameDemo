@@ -11,13 +11,18 @@ namespace CardGameLib
         public int Value {
             get
             {
-                return (Rank == 14) ? 11 : (Rank >= 10 && Rank < 14) ? 10 : Rank;
+                return (Rank == 1) ? 11 : (Rank >= 10 && Rank < 14) ? 10 : Rank;
             }
         }
 
         public override string ToString()
         {
             return Rank.ToString() + " of " + Suit.ToString();
+        }
+
+        public string FileName()
+        {
+            return ToString().ToLower().Replace(" ", "_")+".png";
         }
     }
 

@@ -9,9 +9,22 @@ namespace CardGameDemo
         {
             Console.WriteLine("Let's play 31!");
             Random r = new Random();
-            Game G = new Game(r,new ComputerPlayer(r,"Computer"), new ConsolePlayer("You"));
-            G.Play();
+            ComputerPlayer cp = new ComputerPlayer(r, "Computer");
+            cp.Done += Cp_Done;
+            Game G = new Game(r,cp, new ConsolePlayer("You"));
+            G.InitialDeal();
+            while (!G.GameOver)
+            {
+                Console.WriteLine($"{G.Players[G.CurrentTurn].Name} turn!");
+                G.NextTurn();
+            }
+            Console.WriteLine($"--- GAME OVER, {G.Winner.Name} WON WITH {G.Winner.Hand.ToListString()} ---");
             Console.ReadLine();
+        }
+
+        private static void Cp_Done(Card obj)
+        {
+            Console.WriteLine("Computer Player done with their turn, dropped " + obj.ToString());
         }
     }
 }

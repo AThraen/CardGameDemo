@@ -19,7 +19,7 @@ namespace CardGameDemo
             }
             if (Game.Table.Count > 0)
             {
-                Console.WriteLine("On the table there is " + Game.Table.First().ToString() + ". Do you want to draw from the Table (T) or the Deck (D)?");
+                Console.WriteLine("On the table there is " + Game.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D)?");
                 if (Console.ReadLine().ToUpper() == "T") DrawFromTable();
                 else DrawFromDeck();
             }
