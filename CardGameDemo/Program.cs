@@ -14,9 +14,7 @@ namespace CardGameDemo
             Game G = new Game(r,cp, new ConsolePlayer("You"));
 
             G.InitialDeal();
-
-            string s=G.SerializeGame();
-            var G2 = Game.DeserializeGame(s);
+            
 
             while (!G.GameOver)
             {
