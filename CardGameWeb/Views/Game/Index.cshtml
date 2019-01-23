@@ -1,8 +1,29 @@
-﻿
+﻿@model GameViewModel
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Your turn</h2>
+<h3>Table, Decide where to pick up?</h3>
 
-Game
+<div class="row">
+    @using (Html.BeginForm("PickUp", "Game", FormMethod.Post))
+    {
+        <input type="hidden" name="GameState" value="@Model.Game.SerializeGame()"/>
+        <button name="Source" value="Deck">
+            <img src="~/images/Cards/back.png" style="height:300px" />
+        </button>
+        <button name="Source" value="Table">
+            <img src="~/images/Cards/@Model.Game.Table.Last().FileName()" style="height:300px" />
+        </button>
+    }
+</div>
+
+<h3>Your hand</h3>
+
+<div class="row">
+    @foreach(var c in Model.Game.NextPlayer.Hand)
+    {
+        <img src="~/images/Cards/@c.FileName()" style="height:300px"/>
+    }
+</div>

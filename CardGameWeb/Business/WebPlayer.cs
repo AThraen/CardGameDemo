@@ -8,10 +8,13 @@ namespace CardGameWeb.Business
 {
     public class WebPlayer : Player
     {
-        public override void Turn()
+        public bool PickFromDeck { get; set; }
+
+        public int WhichToDrop { get; set; }
+
+        public override void Turn(Game g)
         {
-
-
+            //Do nothing
         }
     }
 }

@@ -23,6 +23,7 @@ namespace CardGameLib
 
         public bool GameOver { get; set; }
 
+        [JsonIgnore]
         public Player Winner { get; set; }
 
         public Game()
@@ -31,13 +32,35 @@ namespace CardGameLib
 
         public string SerializeGame()
         {
-            return JsonConvert.SerializeObject(this);
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            return JsonConvert.SerializeObject(this, jsonSerializerSettings);
+        }
+
+        public static Game DeserializeGame(string s)
+        {
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            return JsonConvert.DeserializeObject<Game>(s,jsonSerializerSettings);
+        }
+
+        [JsonIgnore]
+        public Player NextPlayer
+        {
+            get
+            {
+                return Players[CurrentTurn];
+            }
         }
         
         public void NextTurn()
         {
-            Players[CurrentTurn].Turn();
-            if (Players[CurrentTurn].Hand.CalculateScore() == 31)
+            NextPlayer.Turn(this);
+            if (NextPlayer.Hand.CalculateScore() == 31)
             {
                 Winner = Players[CurrentTurn];
                 GameOver = true;
@@ -64,8 +87,8 @@ namespace CardGameLib
         public Game(Random R,params Player[] Players)
         {
             this.Players = Players;
-            foreach (var p in this.Players) p.Game = this; //Back reference
             Deck = new Deck();
+            Deck.Initialize();
             Deck.Shuffle(R);
             Table = new List<Card>();
             

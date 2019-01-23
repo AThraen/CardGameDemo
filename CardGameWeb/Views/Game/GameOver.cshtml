@@ -1,7 +1,16 @@
-﻿@model GameViewModel
+﻿@model CardGameLib.Player
 @{
     ViewData["Title"] = "GameOver";
 }
 
 <h2>Game Over</h2>
 
+<h3>Winner: @Model.Name with cards</h3>
+<div class="row">
+    @foreach (var c in Model.Hand)
+    {
+        <img src="~/images/Cards/@c.FileName()" style="height:300px" />
+    }
+</div>
+<hr/>
+<a href="/">New game?</a>

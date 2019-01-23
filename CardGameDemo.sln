@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGameDemo", "CardGameDemo\CardGameDemo.csproj", "{7FDED2A5-642E-4483-8712-EF1B26C3272F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGameDemo", "CardGameDemo\CardGameDemo.csproj", "{7FDED2A5-642E-4483-8712-EF1B26C3272F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGameLib", "CardGameLib\CardGameLib.csproj", "{0118187A-DCD7-4E4C-B215-6631EBC26825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGameLib", "CardGameLib\CardGameLib.csproj", "{0118187A-DCD7-4E4C-B215-6631EBC26825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGameWeb", "CardGameWeb\CardGameWeb.csproj", "{CFA56322-E02F-4D3F-A98B-2783C9BB5ACD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGameWeb", "CardGameWeb\CardGameWeb.csproj", "{CFA56322-E02F-4D3F-A98B-2783C9BB5ACD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -13,10 +13,8 @@ namespace CardGameLib
         public List<Card> Hand { get; set; }
         public string Name { get; set; }
 
-        public abstract void Turn(); //0,1,2 = replace card
-
-        [JsonIgnore]
-        public Game Game { get; set; }
+        public abstract void Turn(Game g); 
+        
 
         public Player()
         {
@@ -28,20 +26,20 @@ namespace CardGameLib
             this.Name = Name;
         }
 
-        protected void DrawFromDeck()
+        public void DrawFromDeck(Game g)
         {
-            Hand.Add(Game.Deck.DrawCard());
+            Hand.Add(g.Deck.DrawCard());
         }
 
-        protected void DrawFromTable()
+        public void DrawFromTable(Game g)
         {
-            Hand.Add(Game.Table[Game.Table.Count - 1]);
-            Game.Table.RemoveAt(Game.Table.Count - 1);
+            Hand.Add(g.Table[g.Table.Count - 1]);
+            g.Table.RemoveAt(g.Table.Count - 1);
         }
 
-        protected void DropCard(int idx)
+        public void DropCard(Game g,int idx)
         {
-            Game.Table.Add(Hand[idx]);
+            g.Table.Add(Hand[idx]);
             Hand.RemoveAt(idx);
         }
     }
@@ -59,9 +57,9 @@ namespace CardGameLib
             this.R = R;
         }
 
-        public override void Turn()
+        public override void Turn(Game g)
         {
-            DrawFromDeck();
+            DrawFromDeck(g);
             //Drop card that'll give highest score
             List<Tuple<Card, int>> lst = new List<Tuple<Card, int>>();
             foreach(var c in Hand)
@@ -69,7 +67,7 @@ namespace CardGameLib
                 lst.Add(new Tuple<Card, int>(c,Hand.Except(new Card[] { c }).CalculateScore()));
             }
             int idx = Hand.IndexOf(lst.OrderByDescending(l => l.Item2).First().Item1);
-            DropCard(idx);
+            DropCard(g,idx);
             //Invoking Done event with the card we dropped
             Done?.Invoke(lst.OrderByDescending(l => l.Item2).First().Item1);
         }

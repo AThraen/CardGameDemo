@@ -1,0 +1,24 @@
+﻿@model GameViewModel
+
+@{
+    ViewData["Title"] = "PickUp";
+}
+
+<h2>Your turn</h2>
+
+
+<h3>Your hand, which card to drop?</h3>
+
+<div class="row">
+    @using (Html.BeginForm("Drop", "Game", FormMethod.Post))
+    {
+        <input type="hidden" name="GameState" value="@Model.Game.SerializeGame()" />
+
+        @foreach (var c in Model.Game.NextPlayer.Hand)
+        {
+            <button name="Selection" value="@Model.Game.NextPlayer.Hand.IndexOf(c)">
+                    <img src="~/images/Cards/@c.FileName()" style="height:300px" />
+            </button>
+        }
+    }
+</div>

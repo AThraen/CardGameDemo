@@ -10,6 +10,5 @@ namespace CardGameWeb.Models
     {
         public Game Game { get; set; }
 
-        public int MyProperty { get; set; }
     }
 }

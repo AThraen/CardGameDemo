@@ -10,22 +10,22 @@ namespace CardGameDemo
     {
         public ConsolePlayer(string Name) : base(Name) { }
 
-        public override void Turn()
+        public override void Turn(Game g)
         {
             Console.WriteLine("Your turn. Your hand: ");
             foreach (var c in Hand)
             {
                 Console.WriteLine("\t" + c.ToString());
             }
-            if (Game.Table.Count > 0)
+            if (g.Table.Count > 0)
             {
-                Console.WriteLine("On the table there is " + Game.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D)?");
-                if (Console.ReadLine().ToUpper() == "T") DrawFromTable();
-                else DrawFromDeck();
+                Console.WriteLine("On the table there is " + g.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D)?");
+                if (Console.ReadLine().ToUpper() == "T") DrawFromTable(g);
+                else DrawFromDeck(g);
             }
             else
             {
-                DrawFromDeck();
+                DrawFromDeck(g);
             }
             Console.WriteLine("You drew a card. Your hand: ");
             foreach (var c in Hand)
@@ -36,7 +36,7 @@ namespace CardGameDemo
             Console.WriteLine("Which card to drop? (0-3)");
             string input = Console.ReadLine();
             int action = int.Parse(input);
-            DropCard(action);
+            DropCard(g,action);
             Console.WriteLine("Your score: " + Hand.CalculateScore());
         }
     }

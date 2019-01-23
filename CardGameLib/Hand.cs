@@ -15,7 +15,7 @@ namespace CardGameLib
         
         public static string ToListString(this IEnumerable<Card> Cards)
         {
-            return string.Join(',', Cards);
+            return string.Join(",", Cards);
         }
     }
 }

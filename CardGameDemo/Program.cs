@@ -12,7 +12,12 @@ namespace CardGameDemo
             ComputerPlayer cp = new ComputerPlayer(r, "Computer");
             cp.Done += Cp_Done;
             Game G = new Game(r,cp, new ConsolePlayer("You"));
+
             G.InitialDeal();
+
+            string s=G.SerializeGame();
+            var G2 = Game.DeserializeGame(s);
+
             while (!G.GameOver)
             {
                 Console.WriteLine($"{G.Players[G.CurrentTurn].Name} turn!");
@@ -20,6 +25,7 @@ namespace CardGameDemo
             }
             Console.WriteLine($"--- GAME OVER, {G.Winner.Name} WON WITH {G.Winner.Hand.ToListString()} ---");
             Console.ReadLine();
+
         }
 
         private static void Cp_Done(Card obj)

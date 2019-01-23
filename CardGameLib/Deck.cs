@@ -15,7 +15,7 @@ namespace CardGameLib
             }
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             foreach(Suits suit in (Suits[])Enum.GetValues(typeof(Suits)))
             {
@@ -50,7 +50,6 @@ namespace CardGameLib
         public Deck()
         {
             Cards = new List<Card>();
-            Initialize();
         }
     }
 }
