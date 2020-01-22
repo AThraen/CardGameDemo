@@ -13,6 +13,8 @@ namespace CardGameLib
         public List<Card> Hand { get; set; }
         public string Name { get; set; }
 
+        public bool HasKnocked { get; set; }
+
         public abstract void Turn(Game g); 
         
 
@@ -59,7 +61,8 @@ namespace CardGameLib
 
         public override void Turn(Game g)
         {
-            DrawFromDeck(g);
+            DrawFromDeck(g); //Unless drawing from table will give a higher score than currently
+
             //Drop card that'll give highest score
             List<Tuple<Card, int>> lst = new List<Tuple<Card, int>>();
             foreach(var c in Hand)

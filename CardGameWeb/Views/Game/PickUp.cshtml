@@ -17,7 +17,7 @@
         @foreach (var c in Model.Game.NextPlayer.Hand)
         {
             <button name="Selection" value="@Model.Game.NextPlayer.Hand.IndexOf(c)">
-                    <img src="~/images/Cards/@c.FileName()" style="height:300px" />
+                    <img src="~/images/Cards/@c.FileName()" class="card selectablecard" />
             </button>
         }
     }

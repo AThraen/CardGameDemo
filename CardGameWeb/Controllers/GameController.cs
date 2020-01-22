@@ -51,5 +51,15 @@ namespace CardGameWeb.Controllers
             return View("Index", gvm);
         }
 
+        public IActionResult New()
+        {
+            return View();
+        }
+
+        public IActionResult Join()
+        {
+            return View();
+        }
+
     }
 }

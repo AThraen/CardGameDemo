@@ -5,6 +5,22 @@ body {
     padding-bottom: 20px;
 }
 
+img.card {
+    height:200px;
+    margin: 0px 0px 0px 0px;
+}
+
+img.selectablecard:hover {
+        transform: scale(1.1);
+}
+
+div.cardtable {
+    background-color: darkgreen;
+    border: 5px groove brown;
+    border-radius: 25px;
+    padding: 20px;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
