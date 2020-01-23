@@ -1,7 +1,7 @@
 ﻿@using CardGameLib;
 @model GameViewModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Card Game";
 }
 
 <h2>Your turn</h2>
@@ -11,12 +11,14 @@
     @using (Html.BeginForm("PickUp", "Game", FormMethod.Post))
     {
         <input type="hidden" name="GameState" value="@Model.Game.SerializeGame()"/>
-        <button name="Source" value="Deck">
+        <button name="Source" value="Deck" class="card">
             <img src="~/images/Cards/back.png" class="card selectablecard" />
         </button>
-        <button name="Source" value="Table" style="padding: 0px 0px 0px 0px; border-width:0px;">
+        <button name="Source" value="Table" class="card">
             <img src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
         </button>
+
+        <button name="Source" value="Knock">Knock</button>
     }
 </div>
 

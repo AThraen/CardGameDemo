@@ -10,6 +10,12 @@ img.card {
     margin: 0px 0px 0px 0px;
 }
 
+button.card {
+    padding: 0px 0px 0px 0px;
+    border-width: 0px;
+    border-radius:10px;
+}
+
 img.selectablecard:hover {
         transform: scale(1.1);
 }

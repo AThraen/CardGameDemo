@@ -21,6 +21,7 @@ namespace CardGameLib
         public Player()
         {
             Hand = new List<Card>();
+            HasKnocked = false;
         }
 
         public Player(string Name) : this()

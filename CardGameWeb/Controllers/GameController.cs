@@ -30,6 +30,12 @@ namespace CardGameWeb.Controllers
             Game g = Game.DeserializeGame(GameState);
             var p = g.NextPlayer as WebPlayer;
             if (Source == "Table") p.DrawFromTable(g);
+            else if (Source == "Knock") {
+                p.HasKnocked = true;
+                g.NextTurn();
+
+                //Compare state
+            } 
             else p.DrawFromDeck(g);
 
             GameViewModel gvm = new GameViewModel() { Game = g };

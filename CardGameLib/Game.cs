@@ -10,18 +10,20 @@ namespace CardGameLib
     /// <summary>
     /// Extremely simple version of 31. This time without the "Call" element, for simplicity. Simple: Only action possible: replace card - either from Table or from Deck. First to get 31 wins.
     /// </summary>
-
     public class Game
     {
         public Deck Deck { get; set; }
 
         public List<Card> Table { get; set; }
 
-        public Player[] Players { get; set; }
+        public Player Host =>   Players.First(); 
+
+        public List<Player> Players { get; set; }
 
         public int CurrentTurn { get; set; }
 
-        public bool GameOver { get; set; }
+        public GameState State { get; set; }
+
 
         [JsonIgnore]
         public Player Winner { get; set; }
@@ -57,17 +59,45 @@ namespace CardGameLib
             }
         }
         
+        private void GameOver()
+        {
+            //Either the current player has 31 or he has knocked
+            if (NextPlayer.HasKnocked)
+            {
+                //Identify winner
+            } else
+            {
+                //Winner from 31
+            }
+        }
+
         public void NextTurn()
         {
             NextPlayer.Turn(this);
+
             if (NextPlayer.Hand.CalculateScore() == 31)
             {
                 Winner = Players[CurrentTurn];
-                GameOver = true;
+                GameOver();
             }
 
+
             CurrentTurn++;
-            if (CurrentTurn >= Players.Length) CurrentTurn = 0;
+            if (CurrentTurn >= Players.Count) CurrentTurn = 0;
+            if (NextPlayer.HasKnocked)
+            {
+                //Back to the player that had knocked. Let's evalutae scores.
+                GameOver();
+            }
+
+            if (Deck.CardsLeft == 0)
+            {
+                //If there's no more cards in the deck, let's take those from the table
+                Deck.Cards.AddRange(Table);
+                Table.Clear();
+            }
+
+
         }
 
         public void InitialDeal()
@@ -86,11 +116,12 @@ namespace CardGameLib
 
         public Game(Random R,params Player[] Players)
         {
-            this.Players = Players;
+            this.Players = Players.ToList();
             Deck = new Deck();
             Deck.Initialize();
             Deck.Shuffle(R);
             Table = new List<Card>();
+            State = GameState.WaitingToStart;
             
         }
     }
