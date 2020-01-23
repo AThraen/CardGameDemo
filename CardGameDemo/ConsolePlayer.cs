@@ -19,9 +19,14 @@ namespace CardGameDemo
             }
             if (g.Table.Count > 0)
             {
-                Console.WriteLine("On the table there is " + g.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D)?");
-                if (Console.ReadLine().ToUpper() == "T") DrawFromTable(g);
-                else DrawFromDeck(g);
+                Console.WriteLine("On the table there is " + g.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D) or Call/Knock (C)?");
+                var c = Console.ReadLine().ToUpper();
+                if (c == "T") DrawFromTable(g);
+                else if(c=="D") DrawFromDeck(g);
+                else
+                {
+                    this.HasKnocked = true;
+                }
             }
             else
             {

@@ -102,7 +102,6 @@ namespace CardGameLib
 
         public void InitialDeal()
         {
-            GameOver = false;
             Winner = null;
             CurrentTurn = 0;
             //Deal
