@@ -16,7 +16,7 @@ namespace CardGameDemo
             G.InitialDeal();
             
 
-            while (!G.GameOver)
+            while (G.State!=GameState.GameOver)
             {
                 Console.WriteLine($"{G.Players[G.CurrentTurn].Name} turn!");
                 G.NextTurn();

@@ -12,6 +12,8 @@ namespace CardGameLib
     /// </summary>
     public class Game
     {
+        public int GameId { get; set; }
+
         public Deck Deck { get; set; }
 
         public List<Card> Table { get; set; }
@@ -30,6 +32,7 @@ namespace CardGameLib
 
         public Game()
         {
+            State = GameState.WaitingToStart;
         }
 
         public string SerializeGame()
@@ -110,6 +113,8 @@ namespace CardGameLib
                 for (int i = 0; i < 3; i++) p.Hand.Add(Deck.DrawCard());
             }
             Table.Add(Deck.DrawCard());
+
+            State = GameState.InProgress;
 
         }
 

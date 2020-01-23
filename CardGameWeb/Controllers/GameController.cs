@@ -20,7 +20,7 @@ namespace CardGameWeb.Controllers
             if (g.NextPlayer is ComputerPlayer) g.NextTurn();
 
             GameViewModel gvm = new GameViewModel() { Game = g };
-            if (g.GameOver) return View("GameOver", g.Winner);
+            if (g.State==GameState.GameOver) return View("GameOver", g.Winner);
             return View(gvm);
         }
 
@@ -49,9 +49,9 @@ namespace CardGameWeb.Controllers
             var p = g.NextPlayer as WebPlayer;
             p.DropCard(g, Selection);
             g.NextTurn();
-            if (g.GameOver) return View("GameOver", g.Winner);
+            if (g.State==CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
             g.NextTurn();
-            if (g.GameOver) return View("GameOver", g.Winner);
+            if (g.State==CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
 
             GameViewModel gvm = new GameViewModel() { Game = g };
             return View("Index", gvm);
