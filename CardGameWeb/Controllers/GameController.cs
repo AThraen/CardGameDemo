@@ -57,12 +57,34 @@ namespace CardGameWeb.Controllers
             return View("Index", gvm);
         }
 
+        /// <summary>
+        /// Starts a new game
+        /// </summary>
+        /// <returns></returns>
         public IActionResult New()
         {
-            return View();
+            //Shows Options screen before start. Your name, Cast to screen, Add computer player
+
+            return View(g);
         }
 
-        public IActionResult Join()
+        [HttpPost]
+        public IActionResult SetupNewGame(string PlayerName, bool ComputerPlayer)
+        {
+
+            Game g = new Game();
+            if (!string.IsNullOrEmpty(PlayerName))
+            {
+                g.Players.Add(new HumanPlayer(PlayerName));
+            }
+            if (ComputerPlayer)
+            {
+                g.Players.Add(new ComputerPlayer(new Random(), "Computer"));
+            }
+            return View("GameWaitingToStart",g);
+        }
+
+        public IActionResult Join(int GameId, string Name)
         {
             return View();
         }

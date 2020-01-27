@@ -26,6 +26,8 @@ namespace CardGameLib
 
         public GameState State { get; set; }
 
+        private Random _random;
+
 
         [JsonIgnore]
         public Player Winner { get; set; }
@@ -33,6 +35,9 @@ namespace CardGameLib
         public Game()
         {
             State = GameState.WaitingToStart;
+            _random = new Random();
+            GameId = _random.Next(1000, 9999);
+            Players = new List<Player>();
         }
 
         public string SerializeGame()

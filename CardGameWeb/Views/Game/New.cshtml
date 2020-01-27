@@ -1,9 +1,22 @@
-﻿
+﻿@model CardGameLib.Game
 @{
     ViewData["Title"] = "New Game";
 }
 
-<h2>New</h2>
+
+@using (Html.BeginForm("SetupNewGame", "Game", FormMethod.Post))
+{
+    <div class="form-control">
+        <label for="PlayerName">What's your name?</label>
+        <input type="text" name="PlayerName" id="PlayerName"/>
+
+    </div>
+
+}
+
+<h2>New game of thirty-one!</h2>
+
+<h1><b>Game ID: </b>@Model.GameId</h1>
 
 Show Game ID
 
@@ -15,4 +28,4 @@ Button to add computer player
 
 Auto-refresh
 
-
+<hr />

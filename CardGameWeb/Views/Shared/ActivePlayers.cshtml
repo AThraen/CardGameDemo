@@ -1,0 +1,11 @@
+﻿@model IList<CardGameLib.Player>
+<div>
+    <h3>Players:</h3>
+    <ul>
+        @foreach(var p in Model)
+        {
+            <li class="">@p.Name</li>@* Indicate if the players state - and if they have knocked - and how many cards they have*@
+        }
+    </ul>
+
+</div>
