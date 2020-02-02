@@ -65,7 +65,7 @@ namespace CardGameWeb.Controllers
         {
             //Shows Options screen before start. Your name, Cast to screen, Add computer player
 
-            return View(g);
+            return View();
         }
 
         [HttpPost]

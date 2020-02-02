@@ -5,24 +5,20 @@
 }
 
 <h2>Your turn</h2>
-<h3>Table, Decide where to pick up?</h3>
+<h3>Table, what do you want to do?</h3>
 
 <div class="row cardtable">
     @using (Html.BeginForm("PickUp", "Game", FormMethod.Post))
     {
         <input type="hidden" name="GameState" value="@Model.Game.SerializeGame()"/>
-        <button name="Source" value="Deck" class="card">
-            <img src="~/images/Cards/back.png" class="card selectablecard" />
-        </button>
-        <button name="Source" value="Table" class="card">
-            <img src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
-        </button>
-
-        <button name="Source" value="Knock">Knock</button>
+            <input type="image" name="Source" value="Deck" src="~/images/Cards/back.png" class="card selectablecard" />
+            <input type="image" name="Source" value="Table" src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
+        
+        <input type="image" name="Source" value="Knock" src="~/images/knock.png" class="card selectablecard" title="Knock"/>
     }
 </div>
 
-<h3>Your hand ( @Model.Game.NextPlayer.Hand.CalculateScore())</h3>
+<h3>Your hand (@Model.Game.NextPlayer.Hand.CalculateScore())</h3>
 
 <div class="row">
     @foreach(var c in Model.Game.NextPlayer.Hand)

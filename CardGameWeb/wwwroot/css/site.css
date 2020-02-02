@@ -10,14 +10,20 @@ img.card {
     margin: 0px 0px 0px 0px;
 }
 
+input[type='image'].card {
+    height: 200px;
+    margin: 0px 0px 0px 0px;
+}
+
 button.card {
     padding: 0px 0px 0px 0px;
     border-width: 0px;
     border-radius:10px;
+    background-color: darkgreen;
 }
 
-img.selectablecard:hover {
-        transform: scale(1.1);
+input[type='image'].selectablecard:hover {
+    transform: scale(1.1);
 }
 
 div.cardtable {
