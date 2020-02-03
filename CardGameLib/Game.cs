@@ -18,7 +18,7 @@ namespace CardGameLib
 
         public List<Card> Table { get; set; }
 
-        public Player Host =>   Players.First(); 
+        public Player Host =>   Players.FirstOrDefault(); 
 
         public List<Player> Players { get; set; }
 

@@ -64,7 +64,7 @@ namespace CardGameWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Game}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
