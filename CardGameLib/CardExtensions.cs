@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace CardGameLib
 {
+    /// <summary>
+    /// Extension methods to list of cards
+    /// </summary>
     public static class CardListExtensions
     {
 

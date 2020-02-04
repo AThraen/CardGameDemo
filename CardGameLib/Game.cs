@@ -8,11 +8,15 @@ namespace CardGameLib
 {
 
     /// <summary>
-    /// Extremely simple version of 31. This time without the "Call" element, for simplicity. Simple: Only action possible: replace card - either from Table or from Deck. First to get 31 wins.
+    /// Cardgame Thirty-One
     /// </summary>
     public class Game
     {
+        /// <summary>
+        /// Id of the game
+        /// </summary>
         public int GameId { get; set; }
+
 
         public Deck Deck { get; set; }
 

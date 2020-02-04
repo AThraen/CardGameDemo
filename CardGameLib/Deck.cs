@@ -4,8 +4,14 @@ using System.Text;
 
 namespace CardGameLib
 {
+    /// <summary>
+    /// A deck of cards
+    /// </summary>
     public class Deck
     {
+        /// <summary>
+        /// The cards
+        /// </summary>
         public List<Card> Cards { get; set; }
 
         public int CardsLeft {
@@ -15,6 +21,9 @@ namespace CardGameLib
             }
         }
 
+        /// <summary>
+        /// Add all cards to deck
+        /// </summary>
         public void Initialize()
         {
             foreach(Suits suit in (Suits[])Enum.GetValues(typeof(Suits)))
@@ -27,6 +36,10 @@ namespace CardGameLib
             }
         }
 
+        /// <summary>
+        /// Draw a card from the deck
+        /// </summary>
+        /// <returns>Card drawn</returns>
         public Card DrawCard()
         {
             if (Cards.Count == 0) return null;

@@ -4,10 +4,25 @@ using System.Text;
 
 namespace CardGameLib
 {
+
+    /// <summary>
+    /// A playing card
+    /// </summary>
     public class Card
     {
+        /// <summary>
+        /// The suit of the card
+        /// </summary>
         public Suits Suit { get; set; }
-        public int Rank { get; set; } //1-14
+
+        /// <summary>
+        /// The rank of the card. 1 is Ace, 11 is Jack, 12 is Queen, 13 is King
+        /// </summary>
+        public int Rank { get; set; } //1-13
+
+        /// <summary>
+        /// The value for the game Thirty-One
+        /// </summary>
         public int Value {
             get
             {
@@ -15,11 +30,20 @@ namespace CardGameLib
             }
         }
 
+        /// <summary>
+        /// String representation of the card
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Rank.ToString() + " of " + Suit.ToString();
         }
 
+
+        /// <summary>
+        /// Filename of card
+        /// </summary>
+        /// <returns></returns>
         public string FileName()
         {
             return ToString().ToLower().Replace(" ", "_")+".png";
@@ -28,11 +52,4 @@ namespace CardGameLib
 
 
 
-    public enum Suits
-    {
-        Spades,
-        Hearts,
-        Clubs,
-        Diamonds
-    }
 }
