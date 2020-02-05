@@ -127,6 +127,17 @@ namespace CardGameLib
 
         }
 
+        public void StartGame()
+        {
+            
+            Deck = new Deck();
+            Deck.Initialize();
+            Deck.Shuffle(_random);
+            Table = new List<Card>();
+            InitialDeal();
+            State = GameState.InProgress;
+        }
+
         public Game(Random R,params Player[] Players)
         {
             this.Players = Players.ToList();

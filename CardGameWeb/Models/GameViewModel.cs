@@ -10,5 +10,7 @@ namespace CardGameWeb.Models
     {
         public Game Game { get; set; }
 
+        public HumanPlayer You { get; set; }
+
     }
 }

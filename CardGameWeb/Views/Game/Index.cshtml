@@ -2,27 +2,51 @@
 @model GameViewModel
 @{
     ViewData["Title"] = "Card Game";
+
+    bool HasTurn = Model.Game.NextPlayer == Model.You;
 }
 
-<h2>Your turn</h2>
-<h3>Table, what do you want to do?</h3>
+@if (HasTurn)
+{
+    <h2>Your turn</h2>
+    <h3>Table, what do you want to do?</h3>
 
+    <div class="row cardtable">
+        @using (Html.BeginForm("PickUp", "Game", FormMethod.Post))
+        {
+            <input type="image" name="Action"  value="TakeFromDeck" src="~/images/Cards/back.png" class="card selectablecard" />
+            <input type="image" name="Action" value="TakeFromTable" src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
+            <input type="image" name="Action" value="Knock" src="~/images/knock.png" class="card selectablecard" title="Knock" />
+        }
+    </div>
+}
+else
+{
 <div class="row cardtable">
-    @using (Html.BeginForm("PickUp", "Game", FormMethod.Post))
-    {
-        <input type="hidden" name="GameState" value="@Model.Game.SerializeGame()"/>
-        <input type="image" name="Action" value="TakeFromDeck" src="~/images/Cards/back.png" class="card selectablecard" />
-        <input type="image" name="Action" value="TakeFromTable" src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
-        <input type="image" name="Action" value="Knock" src="~/images/knock.png" class="card selectablecard" title="Knock"/>
-    }
-</div>
-
-<h3>Your hand (@Model.Game.NextPlayer.Hand.CalculateScore())</h3>
-
-<div class="row">
-    @foreach(var c in Model.Game.NextPlayer.Hand)
-    {
-        <img src="~/images/Cards/@c.FileName()" class="card"/>
-    }
+    <input type="image" name="Action" disabled value="TakeFromDeck" src="~/images/Cards/back.png" class="card selectablecard" />
+    <input type="image" name="Action" disabled value="TakeFromTable" src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
 
 </div>
+}
+
+        <h3>Your hand (@Model.You.Hand.CalculateScore())</h3>
+
+        <div class="row">
+            @foreach (var c in Model.You.Hand)
+            {
+                <img src="~/images/Cards/@c.FileName()" class="card" />
+            }
+
+        </div>
+
+        <h4>Players:</h4>
+        <ul class="list-group">
+            @foreach (var p in Model.Game.Players)
+            {
+                <li class="list-group-item @((Model.Game.NextPlayer==p)?"active":"")">@p.Name</li>
+            }
+        </ul>
+
+        <script>
+            setTimeout(function () { window.location.reload(1); }, 5000);
+        </script>

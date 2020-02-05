@@ -25,13 +25,24 @@ namespace CardGameWeb.Controllers
             }
             Game g = gs.LoadGame(Id);
 
+            ViewBag.PlayerId = PlayerId;
+            
+            
 
             if (g.State == GameState.WaitingToStart)
             {
+                //Check if the current player is the host
+                if ((g.Host as HumanPlayer).Guid.ToString() == PlayerId)
+                {
+                    ViewBag.IsHost = true;
+                }
+                else ViewBag.Ishost = false;
                 return View("GameWaitingToStart", g);
             }
 
-            GameViewModel gvm = new GameViewModel() { Game = g };
+            GameViewModel gvm = new GameViewModel() { Game = g, You=g.Players.Where(p => p is HumanPlayer && (p as HumanPlayer).Guid.ToString()==PlayerId).Cast<HumanPlayer>().First()};
+
+
             if (g.State==GameState.GameOver) return View("GameOver", g.Winner);
             return View(gvm);
         }
@@ -102,10 +113,11 @@ namespace CardGameWeb.Controllers
         public IActionResult SetupNewGame(GameStartOptions options)
         {
             Game g = new Game();
-            if (!string.IsNullOrEmpty(options.PlayerName))
-            {
-                g.Players.Add(new HumanPlayer(options.PlayerName));
-            }
+            HumanPlayer hp = new HumanPlayer(options.PlayerName);
+ 
+            hp = new HumanPlayer(options.PlayerName);
+            g.Players.Add(hp);
+            
             if (options.ComputerPlayer)
             {
                 g.Players.Add(new ComputerPlayer(new Random(), "Computer"));
@@ -114,10 +126,34 @@ namespace CardGameWeb.Controllers
             GameService gs = new GameService();
             gs.SaveGame(g);
 
-            return View("GameWaitingToStart",g);
+            return RedirectToAction("Index", new { Id = g.GameId, PlayerId = hp.Guid.ToString() });
         }
 
-        public IActionResult Join(int Id, string Name)
+        [HttpPost]
+        public IActionResult Join(int GameId, string Name)
+        {
+            GameService gs = new GameService();
+            if (!gs.GameExist(GameId))
+            {
+                //Game does not exist, redirect
+                return RedirectToAction("Index", "Home");
+            }
+            Game g = gs.LoadGame(GameId);
+
+            if (g != null && g.State == GameState.WaitingToStart)
+            {
+                //Add player to game
+                var Player = new HumanPlayer(Name);
+                g.Players.Add(Player);
+
+                gs.SaveGame(g);
+                return RedirectToAction("Index", new { Id = g.GameId, PlayerId = Player.Guid.ToString() });
+            }
+            return View();
+            
+        }
+
+        public IActionResult StartGame(int Id, string PlayerId)
         {
             GameService gs = new GameService();
             if (!gs.GameExist(Id))
@@ -127,15 +163,14 @@ namespace CardGameWeb.Controllers
             }
             Game g = gs.LoadGame(Id);
 
-            //Add player to game
-            
+            g.StartGame();
+            g.NextTurn();
+            //TODO: Check state / winner
 
-            return View();
-        }
+            gs.SaveGame(g);
 
-        public IActionResult StartGame(int Id, string PlayerId)
-        {
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Index", new { Id=Id, PlayerId=PlayerId});
         }
 
     }

@@ -1,9 +1,29 @@
 ﻿@{
     ViewData["Title"] = "31 Card Game";
 }
+<h2>Thirty One Card Game</h2>
+<div class="row">
+    <div class="col-md-4">
+        <h4>Join Game</h4>
+        <form asp-action="Join" asp-controller="Game" method="post">
+            <div class="form-group">
+                <label class="control-label">Your Name</label>
+                <input type="text" name="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="control-label">Game ID</label>
+                    <input type="number" name="GameId" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Join Game" class="btn btn-default" />
+            </div>
+        </form>
+        <hr />
+        <a class="btn btn-primary" href="@Url.Action("New","Game")">Start New Game</a>
+    </div>
+</div>
 
 
-New Game
-
-Join Game
 
