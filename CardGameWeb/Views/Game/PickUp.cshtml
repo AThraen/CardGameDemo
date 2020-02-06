@@ -4,21 +4,22 @@
     ViewData["Title"] = "PickUp";
 }
 
-<h2>Your turn</h2>
+    <div class="container">
+        <h2>Your turn</h2>
 
 
-<h3>Your hand, which card to drop?</h3>
+        <h3>Your hand, which card to drop?</h3>
 
-<div class="row">
-    @using (Html.BeginForm("Drop", "Game", FormMethod.Post))
-    {
-        <input type="hidden" name="GameState" value="@Model.Game.SerializeGame()" />
+        <div class="row">
 
-        @foreach (var c in Model.Game.NextPlayer.Hand)
-        {
-            <button name="Selection" value="@Model.Game.NextPlayer.Hand.IndexOf(c)">
+
+            @foreach (var c in Model.Game.NextPlayer.Hand)
+            {
+
+                <a href="@Url.Action("Drop","Game",new {Selection=@Model.Game.NextPlayer.Hand.IndexOf(c), Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
                     <img src="~/images/Cards/@c.FileName()" class="card selectablecard" />
-            </button>
-        }
-    }
-</div>
+                </a>
+            }
+
+        </div>
+    </div>

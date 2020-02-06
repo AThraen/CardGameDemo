@@ -14,8 +14,7 @@ namespace CardGameLib
 
         public bool HasKnocked { get; set; }
 
-        public abstract void Turn(Game g); 
-        
+        public abstract void Turn(Game g);
 
         public Player()
         {

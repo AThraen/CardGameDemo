@@ -5,48 +5,82 @@
 
     bool HasTurn = Model.Game.NextPlayer == Model.You;
 }
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
 
-@if (HasTurn)
-{
-    <h2>Your turn</h2>
-    <h3>Table, what do you want to do?</h3>
-
-    <div class="row cardtable">
-        @using (Html.BeginForm("PickUp", "Game", FormMethod.Post))
+        @if (HasTurn)
         {
-            <input type="image" name="Action"  value="TakeFromDeck" src="~/images/Cards/back.png" class="card selectablecard" />
-            <input type="image" name="Action" value="TakeFromTable" src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
-            <input type="image" name="Action" value="Knock" src="~/images/knock.png" class="card selectablecard" title="Knock" />
+            <h1 class="display-4">Your turn</h1>
         }
+        else
+        {
+            <h1 class="display-4">@Model.Game.NextPlayer.Name turn</h1>
+        }
+        <p class="lead">@Model.Message</p>
     </div>
-}
-else
-{
-<div class="row cardtable">
-    <input type="image" name="Action" disabled value="TakeFromDeck" src="~/images/Cards/back.png" class="card selectablecard" />
-    <input type="image" name="Action" disabled value="TakeFromTable" src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
-
 </div>
-}
-
-        <h3>Your hand (@Model.You.Hand.CalculateScore())</h3>
-
-        <div class="row">
-            @foreach (var c in Model.You.Hand)
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <h3>Table</h3>
+            @if (HasTurn)
             {
-                <img src="~/images/Cards/@c.FileName()" class="card" />
+
+                <div class="row cardtable">
+
+                    <a href="@Url.Action("PickUp","Game",new {PlayerAction=PlayerAction.TakeFromDeck, Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
+                        <img src="~/images/Cards/back.png" class="card selectablecard" />
+                    </a>
+                    <a href="@Url.Action("PickUp","Game",new {PlayerAction=PlayerAction.TakeFromTable, Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
+                        <img src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
+                    </a>
+                    <a href="@Url.Action("PickUp","Game",new {PlayerAction=PlayerAction.Knock, Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
+                        <img src="~/images/knock.png" class="card selectablecard" />
+                    </a>
+
+
+                </div>
+            }
+            else
+            {
+                <div class="row cardtable">
+                    <img src="~/images/Cards/back.png" class="card" />
+                    <img src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card" />
+                </div>
             }
 
+            <h3>Your hand (@Model.You.Hand.CalculateScore() points)</h3>
+
+            <div class="row">
+                @foreach (var c in Model.You.Hand)
+                {
+                    <img src="~/images/Cards/@c.FileName()" class="card" />
+                }
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h4>Players:</h4>
+            <ul class="list-group">
+                @foreach (var p in Model.Game.Players)
+                {
+                    <li class="list-group-item @((Model.Game.NextPlayer==p)?"active":"")">
+                        @p.Name
+                        @if (p.HasKnocked)
+                        {
+                            <span class="badge">Knocked</span>
+                        }
+                    </li>
+                }
+            </ul>
         </div>
 
-        <h4>Players:</h4>
-        <ul class="list-group">
-            @foreach (var p in Model.Game.Players)
-            {
-                <li class="list-group-item @((Model.Game.NextPlayer==p)?"active":"")">@p.Name</li>
-            }
-        </ul>
+    </div>
+</div>
 
-        <script>
-            setTimeout(function () { window.location.reload(1); }, 5000);
-        </script>
+
+
+
+<script>
+    setTimeout(function () { window.location.reload(1); }, 5000);
+</script>

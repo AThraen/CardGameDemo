@@ -12,18 +12,22 @@ namespace CardGameWeb.Controllers
     public class GameController : Controller
     {
 
-        
+        private readonly GameService _gameService;
+
+        public GameController()
+        {
+            _gameService = new GameService();
+        }
 
         public IActionResult Index(int Id, string PlayerId=null)
         {
             //Show main game page
-            GameService gs = new GameService();
-            if (!gs.GameExist(Id))
+            if (!_gameService.GameExist(Id))
             {
                 //Game does not exist, redirect
                 return RedirectToAction("Index", "Home");
             }
-            Game g = gs.LoadGame(Id);
+            Game g = _gameService.LoadGame(Id);
 
             ViewBag.PlayerId = PlayerId;
             
@@ -40,62 +44,81 @@ namespace CardGameWeb.Controllers
                 return View("GameWaitingToStart", g);
             }
 
-            GameViewModel gvm = new GameViewModel() { Game = g, You=g.Players.Where(p => p is HumanPlayer && (p as HumanPlayer).Guid.ToString()==PlayerId).Cast<HumanPlayer>().First()};
+
+
+            //Check if we are in the middle of a step
+            HumanPlayer you = g.Players.Where(p => p is HumanPlayer && (p as HumanPlayer).Guid.ToString() == PlayerId).Cast<HumanPlayer>().First();
+            GameViewModel gvm = new GameViewModel() { Game = g, You = you };
+            if (g.NextPlayer.Hand.Count>3 && g.NextPlayer == you)
+            {
+                return View("PickUp", gvm);
+            }
 
 
             if (g.State==GameState.GameOver) return View("GameOver", g.Winner);
             return View(gvm);
         }
 
-        [HttpPost]
-        public IActionResult PickUp(int Id, string PlayerId, PlayerAction Action)
+
+
+        public IActionResult PickUp(int Id, string PlayerId, PlayerAction PlayerAction)
         {
-            GameService gs = new GameService();
-            if (!gs.GameExist(Id))
+            if (!_gameService.GameExist(Id))
             {
                 //Game does not exist, redirect
                 return RedirectToAction("Index", "Home");
             }
-            Game g = gs.LoadGame(Id);
+            Game g = _gameService.LoadGame(Id);
 
             //Check current player is the next player.
+            var p = g.NextPlayer as HumanPlayer;
 
-            var p = g.NextPlayer as WebPlayer;
+            GameViewModel gvm = new GameViewModel() { Game = g, You = g.Players.Where(pp => pp is HumanPlayer && (pp as HumanPlayer).Guid.ToString() == PlayerId).First() as HumanPlayer };
 
             //Perform the action
-            if (Action == PlayerAction.TakeFromTable) p.DrawFromTable(g);
-            else if (Action == PlayerAction.Knock) {
+            if (PlayerAction == PlayerAction.TakeFromTable)
+            {
+                p.DrawFromTable(g);
+                gvm.Message = "You picked up " + p.Hand.Last().ToString();
+            }
+            else if (PlayerAction == PlayerAction.Knock)
+            {
                 p.HasKnocked = true;
+                gvm.Message = "You called by knocking";
                 g.NextTurn();
                 if (g.State == CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
                 //Compare state
-            } 
-            else p.DrawFromDeck(g);
+                return RedirectToAction("Index", new { Id = g.GameId, PlayerId = PlayerId });
+            }
+            else
+            {
+                p.DrawFromDeck(g);
+                gvm.Message = "You picked up " + p.Hand.Last().ToString();
+            }
 
-            GameViewModel gvm = new GameViewModel() { Game = g };
+            _gameService.SaveGame(g);
             return View(gvm);
         }
 
-        [HttpPost]
         public IActionResult Drop(int Id, string PlayerId, int Selection)
         {
-            GameService gs = new GameService();
-            if (!gs.GameExist(Id))
+            if (!_gameService.GameExist(Id))
             {
                 //Game does not exist, redirect
                 return RedirectToAction("Index", "Home");
             }
-            Game g = gs.LoadGame(Id);
+            Game g = _gameService.LoadGame(Id);
 
-            var p = g.NextPlayer as WebPlayer;
+            var p = g.NextPlayer as HumanPlayer;
             p.DropCard(g, Selection);
             g.NextTurn();
             if (g.State==CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
             g.NextTurn();
             if (g.State==CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
 
+            _gameService.SaveGame(g);
             GameViewModel gvm = new GameViewModel() { Game = g };
-            return View("Index", gvm);
+            return RedirectToAction("Index", new { Id = g.GameId, PlayerId = PlayerId });
         }
 
         /// <summary>
@@ -113,6 +136,8 @@ namespace CardGameWeb.Controllers
         public IActionResult SetupNewGame(GameStartOptions options)
         {
             Game g = new Game();
+            //Verify game ID is unique
+
             HumanPlayer hp = new HumanPlayer(options.PlayerName);
  
             hp = new HumanPlayer(options.PlayerName);
@@ -123,22 +148,20 @@ namespace CardGameWeb.Controllers
                 g.Players.Add(new ComputerPlayer(new Random(), "Computer"));
             }
 
-            GameService gs = new GameService();
-            gs.SaveGame(g);
+            _gameService.SaveGame(g);
 
             return RedirectToAction("Index", new { Id = g.GameId, PlayerId = hp.Guid.ToString() });
         }
 
-        [HttpPost]
+
         public IActionResult Join(int GameId, string Name)
         {
-            GameService gs = new GameService();
-            if (!gs.GameExist(GameId))
+            if (!_gameService.GameExist(GameId))
             {
                 //Game does not exist, redirect
                 return RedirectToAction("Index", "Home");
             }
-            Game g = gs.LoadGame(GameId);
+            Game g = _gameService.LoadGame(GameId);
 
             if (g != null && g.State == GameState.WaitingToStart)
             {
@@ -146,7 +169,7 @@ namespace CardGameWeb.Controllers
                 var Player = new HumanPlayer(Name);
                 g.Players.Add(Player);
 
-                gs.SaveGame(g);
+                _gameService.SaveGame(g);
                 return RedirectToAction("Index", new { Id = g.GameId, PlayerId = Player.Guid.ToString() });
             }
             return View();
@@ -155,19 +178,17 @@ namespace CardGameWeb.Controllers
 
         public IActionResult StartGame(int Id, string PlayerId)
         {
-            GameService gs = new GameService();
-            if (!gs.GameExist(Id))
+            if (!_gameService.GameExist(Id))
             {
                 //Game does not exist, redirect
                 return RedirectToAction("Index", "Home");
             }
-            Game g = gs.LoadGame(Id);
+            Game g = _gameService.LoadGame(Id);
 
             g.StartGame();
-            g.NextTurn();
             //TODO: Check state / winner
 
-            gs.SaveGame(g);
+            _gameService.SaveGame(g);
 
 
             return RedirectToAction("Index", new { Id=Id, PlayerId=PlayerId});

@@ -22,7 +22,7 @@ button.card {
     background-color: darkgreen;
 }
 
-input[type='image'].selectablecard:hover {
+img.selectablecard:hover {
     transform: scale(1.1);
 }
 

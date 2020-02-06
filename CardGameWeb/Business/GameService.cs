@@ -29,6 +29,7 @@ namespace CardGameWeb.Business
             File.WriteAllText(filename, g.SerializeGame());
         }
 
+
         public Game LoadGame(int id)
         {
             return Game.DeserializeGame(File.ReadAllText(GetFilePath(id)));

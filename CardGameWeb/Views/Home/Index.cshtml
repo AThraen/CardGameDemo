@@ -1,11 +1,19 @@
 ﻿@{
     ViewData["Title"] = "31 Card Game";
 }
-<h2>Thirty One Card Game</h2>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+
+            <h1 class="display-4">Thirty One Card Game</h1>
+
+            <p class="lead">Do you want to host a new game or join one waiting to start?</p>
+        </div>
+    </div>
+<h2></h2>
 <div class="row">
     <div class="col-md-4">
         <h4>Join Game</h4>
-        <form asp-action="Join" asp-controller="Game" method="post">
+        <form asp-action="Join" asp-controller="Game" method="get">
             <div class="form-group">
                 <label class="control-label">Your Name</label>
                 <input type="text" name="Name" class="form-control" />

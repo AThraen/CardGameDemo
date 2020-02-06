@@ -3,11 +3,17 @@
     ViewData["Title"] = "Game Waiting To Start";
 }
 
-<h2>Game: @Model.GameId</h2>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Game: @Model.GameId</h1>
+            <p class="lead">Waiting for additional players to join</p>
+        </div>
+    </div>
+
 
 
 <h4>Players:</h4>
-<ul class="list-group">
+<ul class="list-group list-group-flush">
     @foreach(var p in Model.Players)
     {
         <li class="list-group-item">@p.Name</li>

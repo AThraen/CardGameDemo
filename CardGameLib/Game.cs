@@ -17,7 +17,6 @@ namespace CardGameLib
         /// </summary>
         public int GameId { get; set; }
 
-
         public Deck Deck { get; set; }
 
         public List<Card> Table { get; set; }
@@ -36,6 +35,9 @@ namespace CardGameLib
         [JsonIgnore]
         public Player Winner { get; set; }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public Game()
         {
             State = GameState.WaitingToStart;
@@ -44,6 +46,21 @@ namespace CardGameLib
             Players = new List<Player>();
         }
 
+        /// <summary>
+        /// Constructor that starts game right away
+        /// </summary>
+        /// <param name="R"></param>
+        /// <param name="Players"></param>
+        public Game(Random R, params Player[] Players) : this()
+        {
+            this.Players = Players.ToList();
+            StartGame();            
+        }
+
+        /// <summary>
+        /// Serializes game into Json
+        /// </summary>
+        /// <returns></returns>
         public string SerializeGame()
         {
             var jsonSerializerSettings = new JsonSerializerSettings()
@@ -53,6 +70,11 @@ namespace CardGameLib
             return JsonConvert.SerializeObject(this, jsonSerializerSettings);
         }
 
+        /// <summary>
+        /// Deserializes game from Json
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static Game DeserializeGame(string s)
         {
             var jsonSerializerSettings = new JsonSerializerSettings()
@@ -138,15 +160,6 @@ namespace CardGameLib
             State = GameState.InProgress;
         }
 
-        public Game(Random R,params Player[] Players)
-        {
-            this.Players = Players.ToList();
-            Deck = new Deck();
-            Deck.Initialize();
-            Deck.Shuffle(R);
-            Table = new List<Card>();
-            State = GameState.WaitingToStart;
-            
-        }
+
     }
 }
