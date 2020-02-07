@@ -1,16 +1,27 @@
-﻿@model CardGameLib.Player
+﻿@using CardGameLib;
+@model CardGameLib.Game
 @{
-    ViewData["Title"] = "GameOver";
+    ViewData["Title"] = "Game Over";
 }
 
-<h2>Game Over</h2>
 
-<h3>Winner: @Model.Name with cards</h3>
-<div class="row">
-    @foreach (var c in Model.Hand)
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Game Over - @Model.Winner.Name won!</h1>
+        <p class="lead">Thanks for playing!</p>
+    </div>
+</div>
+
+<div class="container">
+    @foreach (var p in Model.Players.OrderByDescending(p => p.Hand.CalculateScore()))
     {
-        <img src="~/images/Cards/@c.FileName()" style="height:300px" />
+    <div class="row">
+        <h2>@p.Name: @p.Hand.CalculateScore() points</h2>
+        <p>@p.LastAction</p>
+        @foreach (var c in p.Hand)
+        {
+            <img src="~/images/Cards/@c.FileName()" class="card" />
+        }
+    </div>
     }
 </div>
-<hr/>
-<a href="/">New game?</a>

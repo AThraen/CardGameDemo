@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,11 +10,14 @@ namespace CardGameLib
     /// </summary>
     public class Deck
     {
+        private const int SHUFFLETIMES = 20000;
+
         /// <summary>
         /// The cards
         /// </summary>
         public List<Card> Cards { get; set; }
 
+        [JsonIgnore]
         public int CardsLeft {
             get
             {
@@ -48,9 +52,13 @@ namespace CardGameLib
             return c;
         }
 
+        /// <summary>
+        /// Shuffle the cards
+        /// </summary>
+        /// <param name="R"></param>
         public void Shuffle(Random R)
         {
-            for(int i = 0; i < 20000; i++)
+            for(int i = 0; i < SHUFFLETIMES; i++)
             {
                 int from = R.Next(Cards.Count);
                 int to = R.Next(Cards.Count);
@@ -60,6 +68,9 @@ namespace CardGameLib
             }
         }
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public Deck()
         {
             Cards = new List<Card>();

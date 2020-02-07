@@ -11,30 +11,50 @@ namespace CardGameLib
     /// </summary>
     public class ComputerPlayer : Player
     {
-        private Random R;
+        private Random _random;
 
+        /// <summary>
+        /// Event to fire, when done with turn
+        /// </summary>
         public event Action<Card> Done;
 
-        public ComputerPlayer(Random R, string Name) : base(Name)
+        public ComputerPlayer(string Name) : base(Name)
         {
-            this.R = R;
+            this._random = new Random();
+        }
+
+        public ComputerPlayer()
+        {
+            this._random = new Random();            
         }
 
         public override void Turn(Game g)
         {
-            DrawFromDeck(g); //Unless drawing from table will give a higher score than currently
-
-            //Drop card that'll give highest score
-            List<Tuple<Card, int>> lst = new List<Tuple<Card, int>>();
-            foreach (var c in Hand)
+            //First, decide on action: Draw from deck, draw from table, knock
+            if (Hand.CalculateScore() > 25 && !g.Players.Any(p => p.HasKnocked) && _random.Next(3) == 1)
             {
-                lst.Add(new Tuple<Card, int>(c, Hand.Except(new Card[] { c }).CalculateScore()));
+                this.HasKnocked = true;
+                this.LastAction = "knocked/called";
+                return;
             }
-            int idx = Hand.IndexOf(lst.OrderByDescending(l => l.Item2).First().Item1);
-            DropCard(g, idx);
+            else
+            {
+                //Decide if I should draw from table or from deck
+                if (g.Table.Any() && g.Table.Last().Value >= 10 && _random.Next(2) == 1) DrawFromTable(g);
+                else DrawFromDeck(g); 
 
-            //Invoking Done event with the card we dropped
-            Done?.Invoke(lst.OrderByDescending(l => l.Item2).First().Item1);
+                //Drop card that'll give highest score
+                List<Tuple<Card, int>> lst = new List<Tuple<Card, int>>();
+                foreach (var c in Hand)
+                {
+                    lst.Add(new Tuple<Card, int>(c, Hand.Except(new Card[] { c }).CalculateScore()));
+                }
+                int idx = Hand.IndexOf(lst.OrderByDescending(l => l.Item2).First().Item1);
+                this.LastAction = "dropped " + Hand[idx].ToString();
+                DropCard(g, idx);
+                //Invoking Done event with the card we dropped
+                Done?.Invoke(lst.OrderByDescending(l => l.Item2).First().Item1);
+            }
         }
     }
 }

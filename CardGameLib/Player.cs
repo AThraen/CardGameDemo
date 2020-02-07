@@ -16,6 +16,8 @@ namespace CardGameLib
 
         public abstract void Turn(Game g);
 
+        public string LastAction { get; set; }
+
         public Player()
         {
             Hand = new List<Card>();

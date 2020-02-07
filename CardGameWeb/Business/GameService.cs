@@ -23,6 +23,10 @@ namespace CardGameWeb.Business
             return Path.Combine(AppDataPath, GameId.ToString() + ".json");
         }
 
+        /// <summary>
+        /// Save game
+        /// </summary>
+        /// <param name="g"></param>
         public void SaveGame(Game g)
         {
             string filename = GetFilePath(g.GameId);

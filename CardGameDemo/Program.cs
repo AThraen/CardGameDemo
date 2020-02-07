@@ -9,18 +9,16 @@ namespace CardGameDemo
         {
             Console.WriteLine("Let's play 31!");
             Random r = new Random();
-            ComputerPlayer cp = new ComputerPlayer(r, "Computer");
+            ComputerPlayer cp = new ComputerPlayer( "Computer");
             cp.Done += Cp_Done;
             Game G = new Game(r,cp, new ConsolePlayer("You"));
-
-            G.InitialDeal();
-            
-
-            while (G.State!=GameState.GameOver)
+            bool isGameOver = false;
+            while (!isGameOver)
             {
                 Console.WriteLine($"{G.Players[G.CurrentTurn].Name} turn!");
-                G.NextTurn();
+                isGameOver = G.NextTurn();
             }
+            Console.WriteLine("----------------------------------------------------------------------------");
             Console.WriteLine($"--- GAME OVER, {G.Winner.Name} WON WITH {G.Winner.Hand.ToListString()} ---");
             Console.ReadLine();
 

@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Card Game";
 
-    bool HasTurn = Model.Game.NextPlayer == Model.You;
+    bool HasTurn = Model.Game.CurrentPlayer == Model.You;
 }
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
@@ -11,12 +11,16 @@
         @if (HasTurn)
         {
             <h1 class="display-4">Your turn</h1>
+
         }
         else
         {
-            <h1 class="display-4">@Model.Game.NextPlayer.Name turn</h1>
+            <h1 class="display-4">@Model.Game.CurrentPlayer.Name turn</h1>
         }
-        <p class="lead">@Model.Message</p>
+        @if (!string.IsNullOrEmpty(Model.You.LastAction))
+        {
+        <p class="lead">You @Model.You.LastAction</p>
+        }
     </div>
 </div>
 <div class="container">
@@ -61,24 +65,23 @@
         </div>
         <div class="col-md-3">
             <h4>Players:</h4>
-            <ul class="list-group">
+            <div class="list-group">
                 @foreach (var p in Model.Game.Players)
                 {
-                    <li class="list-group-item @((Model.Game.NextPlayer==p)?"active":"")">
-                        @p.Name
+                    <div class="list-group-item @((Model.Game.CurrentPlayer==p)?"active":"")">
+                        <h4>@p.Name</h4>
                         @if (p.HasKnocked)
                         {
                             <span class="badge">Knocked</span>
                         }
-                    </li>
+                        <p class="list-group-item-text">@p.LastAction</p>
+                    </div>
                 }
-            </ul>
+            </div>
         </div>
 
     </div>
 </div>
-
-
 
 
 <script>

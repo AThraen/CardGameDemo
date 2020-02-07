@@ -12,7 +12,5 @@ namespace CardGameWeb.Models
 
         public HumanPlayer You { get; set; }
 
-        public string Message { get; set; }
-
     }
 }

@@ -3,20 +3,22 @@
 @{
     ViewData["Title"] = "PickUp";
 }
-
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+                <h1 class="display-4">Your turn</h1>
+                <p class="lead">You @Model.You.LastAction</p>
+        </div>
+    </div>
     <div class="container">
-        <h2>Your turn</h2>
 
-
-        <h3>Your hand, which card to drop?</h3>
+        <h3>Your hand, which card will you drop?</h3>
 
         <div class="row">
 
-
-            @foreach (var c in Model.Game.NextPlayer.Hand)
+            @foreach (var c in Model.Game.CurrentPlayer.Hand)
             {
 
-                <a href="@Url.Action("Drop","Game",new {Selection=@Model.Game.NextPlayer.Hand.IndexOf(c), Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
+                <a href="@Url.Action("Drop","Game",new {Selection=@Model.Game.CurrentPlayer.Hand.IndexOf(c), Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
                     <img src="~/images/Cards/@c.FileName()" class="card selectablecard" />
                 </a>
             }

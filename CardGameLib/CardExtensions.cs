@@ -11,6 +11,11 @@ namespace CardGameLib
     public static class CardListExtensions
     {
 
+        /// <summary>
+        /// Calculate score for a list of cards
+        /// </summary>
+        /// <param name="Cards"></param>
+        /// <returns></returns>
         public static int CalculateScore(this IEnumerable<Card> Cards)
         {
             return Cards.GroupBy(c => c.Suit).OrderByDescending(grp => grp.Sum(c => c.Value)).First().Sum(c => c.Value);

@@ -31,8 +31,6 @@ namespace CardGameWeb.Controllers
 
             ViewBag.PlayerId = PlayerId;
             
-            
-
             if (g.State == GameState.WaitingToStart)
             {
                 //Check if the current player is the host
@@ -42,20 +40,19 @@ namespace CardGameWeb.Controllers
                 }
                 else ViewBag.Ishost = false;
                 return View("GameWaitingToStart", g);
+            } else if (g.State == GameState.GameOver)
+            {
+                return RedirectToAction("GameOver", new { Id = Id });
             }
-
-
 
             //Check if we are in the middle of a step
             HumanPlayer you = g.Players.Where(p => p is HumanPlayer && (p as HumanPlayer).Guid.ToString() == PlayerId).Cast<HumanPlayer>().First();
             GameViewModel gvm = new GameViewModel() { Game = g, You = you };
-            if (g.NextPlayer.Hand.Count>3 && g.NextPlayer == you)
+            if (g.CurrentPlayer.Hand.Count>3 && g.CurrentPlayer == you)
             {
                 return View("PickUp", gvm);
             }
 
-
-            if (g.State==GameState.GameOver) return View("GameOver", g.Winner);
             return View(gvm);
         }
 
@@ -71,7 +68,7 @@ namespace CardGameWeb.Controllers
             Game g = _gameService.LoadGame(Id);
 
             //Check current player is the next player.
-            var p = g.NextPlayer as HumanPlayer;
+            var p = g.CurrentPlayer as HumanPlayer;
 
             GameViewModel gvm = new GameViewModel() { Game = g, You = g.Players.Where(pp => pp is HumanPlayer && (pp as HumanPlayer).Guid.ToString() == PlayerId).First() as HumanPlayer };
 
@@ -79,27 +76,34 @@ namespace CardGameWeb.Controllers
             if (PlayerAction == PlayerAction.TakeFromTable)
             {
                 p.DrawFromTable(g);
-                gvm.Message = "You picked up " + p.Hand.Last().ToString();
+                p.LastAction = $"picked up {p.Hand.Last().ToString()} from the table";
             }
             else if (PlayerAction == PlayerAction.Knock)
             {
                 p.HasKnocked = true;
-                gvm.Message = "You called by knocking";
-                g.NextTurn();
-                if (g.State == CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
+                p.LastAction = "knocked / called";
+                if(g.NextTurn()) return View("GameOver", g);
                 //Compare state
+                _gameService.SaveGame(g);
                 return RedirectToAction("Index", new { Id = g.GameId, PlayerId = PlayerId });
             }
             else
             {
                 p.DrawFromDeck(g);
-                gvm.Message = "You picked up " + p.Hand.Last().ToString();
+                p.LastAction = " picked up a card from the deck ";
             }
 
             _gameService.SaveGame(g);
             return View(gvm);
         }
 
+        /// <summary>
+        /// Dropping a card typically completes the players turn
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="PlayerId"></param>
+        /// <param name="Selection"></param>
+        /// <returns></returns>
         public IActionResult Drop(int Id, string PlayerId, int Selection)
         {
             if (!_gameService.GameExist(Id))
@@ -109,12 +113,16 @@ namespace CardGameWeb.Controllers
             }
             Game g = _gameService.LoadGame(Id);
 
-            var p = g.NextPlayer as HumanPlayer;
+            var p = g.CurrentPlayer as HumanPlayer;
+            p.LastAction = $"dropped {p.Hand[Selection].ToString()}";
             p.DropCard(g, Selection);
-            g.NextTurn();
-            if (g.State==CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
-            g.NextTurn();
-            if (g.State==CardGameLib.GameState.GameOver) return View("GameOver", g.Winner);
+
+            //Done with the turn - complete the turn
+            if (g.NextTurn())
+            {
+                _gameService.SaveGame(g);
+                return RedirectToAction("GameOver", new { Id = Id });
+            }
 
             _gameService.SaveGame(g);
             GameViewModel gvm = new GameViewModel() { Game = g };
@@ -145,7 +153,7 @@ namespace CardGameWeb.Controllers
             
             if (options.ComputerPlayer)
             {
-                g.Players.Add(new ComputerPlayer(new Random(), "Computer"));
+                g.Players.Add(new ComputerPlayer("Computer"));
             }
 
             _gameService.SaveGame(g);
@@ -174,6 +182,18 @@ namespace CardGameWeb.Controllers
             }
             return View();
             
+        }
+
+        public IActionResult GameOver(int Id)
+        {
+            if (!_gameService.GameExist(Id))
+            {
+                //Game does not exist, redirect
+                return RedirectToAction("Index", "Home");
+            }
+            Game g = _gameService.LoadGame(Id);
+
+            return View(g);
         }
 
         public IActionResult StartGame(int Id, string PlayerId)

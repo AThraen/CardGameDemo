@@ -17,6 +17,7 @@ namespace CardGameDemo
             {
                 Console.WriteLine("\t" + c.ToString());
             }
+            Console.WriteLine($"Hand score: {Hand.CalculateScore()}\n");
             if (g.Table.Count > 0)
             {
                 Console.WriteLine("On the table there is " + g.Table.Last().ToString() + ". Do you want to draw from the Table (T) or the Deck (D) or Call/Knock (C)?");
@@ -26,6 +27,7 @@ namespace CardGameDemo
                 else
                 {
                     this.HasKnocked = true;
+                    return;
                 }
             }
             else
@@ -35,13 +37,13 @@ namespace CardGameDemo
             Console.WriteLine("You drew a card. Your hand: ");
             foreach (var c in Hand)
             {
-                Console.WriteLine("\t" + c.ToString());
+                Console.WriteLine("\t1\t" + c.ToString());
             }
 
-            Console.WriteLine("Which card to drop? (0-3)");
+            Console.WriteLine("Which card to drop? (1-4)");
             string input = Console.ReadLine();
             int action = int.Parse(input);
-            DropCard(g,action);
+            DropCard(g,action-1);
             Console.WriteLine("Your score: " + Hand.CalculateScore());
         }
     }
