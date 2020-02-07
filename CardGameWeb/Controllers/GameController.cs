@@ -56,7 +56,11 @@ namespace CardGameWeb.Controllers
             return View(gvm);
         }
 
-
+        public IActionResult CleanUp()
+        {
+            int cnt=_gameService.CleanupOldGames();
+            return Json(new {GamesDeleted=cnt });
+        }
 
         public IActionResult PickUp(int Id, string PlayerId, PlayerAction PlayerAction)
         {
@@ -145,7 +149,9 @@ namespace CardGameWeb.Controllers
         {
             Game g = new Game();
             //Verify game ID is unique
-
+            Random r = new Random();
+            while (_gameService.GameExist(g.GameId))
+                g.GameId = r.Next(1000, 9999);
             HumanPlayer hp = new HumanPlayer(options.PlayerName);
  
             hp = new HumanPlayer(options.PlayerName);

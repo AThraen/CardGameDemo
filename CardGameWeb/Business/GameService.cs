@@ -15,12 +15,31 @@ namespace CardGameWeb.Business
 
         public GameService()
         {
-            AppDataPath= Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "Home");
+            AppDataPath = Path.Combine(
+                Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "Home")
+                , "CardGameWeb");
+            Directory.CreateDirectory(AppDataPath);
+            
         }
 
         private string GetFilePath(int GameId)
         {
             return Path.Combine(AppDataPath, GameId.ToString() + ".json");
+        }
+
+        public int CleanupOldGames()
+        {
+            int cnt = 0;
+            foreach(var f in Directory.GetFiles(AppDataPath, "*.json"))
+            {
+                FileInfo fi = new FileInfo(f);
+                if (fi.LastAccessTime.AddDays(1) < DateTime.Now)
+                {
+                    File.Delete(f);
+                    cnt++;
+                }
+            }
+            return cnt;
         }
 
         /// <summary>
