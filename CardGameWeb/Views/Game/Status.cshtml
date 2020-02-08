@@ -1,0 +1,29 @@
+﻿@model CardGameLib.Game
+@{
+    ViewData["Title"] = "Thirty-One Game " + Model.GameId;
+}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+
+        <h1 class="display-4">@(Model.CurrentPlayer.Name+"s") turn</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <h3>Table</h3>
+            <div class="row cardtable">
+                <img src="~/images/Cards/back.png" class="card" />
+                <img src="~/images/Cards/@Model.Table.Last().FileName()" class="card" />
+            </div>
+        </div>
+        <div class="col-md-5">
+            <partial name="_PlayerList" model="Model" />
+        </div>
+    </div>
+</div>
+
+<script>
+    setTimeout(function () { window.location.reload(1); }, 5000);
+</script>

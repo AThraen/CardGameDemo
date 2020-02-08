@@ -21,7 +21,7 @@
     }
 </ul>
 
-@if (ViewBag.IsHost)
+@if (ViewBag.IsHost && Model.Players.Count>=2)
 {
     <hr />
     <a class="btn btn-primary" href="@Url.Action("StartGame",new { Id = Model.GameId, PlayerId=(Model.Host as HumanPlayer).Guid.ToString() })">Start Game!</a>

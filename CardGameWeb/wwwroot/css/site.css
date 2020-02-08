@@ -6,13 +6,25 @@ body {
 }
 
 img.card {
-    height:200px;
+    height:150px;
     margin: 0px 0px 0px 0px;
 }
 
 input[type='image'].card {
     height: 200px;
     margin: 0px 0px 0px 0px;
+}
+
+.jumbotron{
+    padding-bottom:0px !important;
+    margin-bottom:0px !important;
+    padding-top:10px !important;
+}
+
+.equal {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
 }
 
 button.card {

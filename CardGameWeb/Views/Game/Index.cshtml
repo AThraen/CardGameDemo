@@ -5,27 +5,10 @@
 
     bool HasTurn = Model.Game.CurrentPlayer == Model.You;
 }
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
 
-        @if (HasTurn)
-        {
-            <h1 class="display-4">Your turn</h1>
-
-        }
-        else
-        {
-            <h1 class="display-4">@Model.Game.CurrentPlayer.Name turn</h1>
-        }
-        @if (!string.IsNullOrEmpty(Model.You.LastAction))
-        {
-        <p class="lead">You @Model.You.LastAction</p>
-        }
-    </div>
-</div>
 <div class="container">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-7">
             <h3>Table</h3>
             @if (HasTurn)
             {
@@ -38,9 +21,12 @@
                     <a href="@Url.Action("PickUp","Game",new {PlayerAction=PlayerAction.TakeFromTable, Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
                         <img src="~/images/Cards/@Model.Game.Table.Last().FileName()" class="card selectablecard" />
                     </a>
-                    <a href="@Url.Action("PickUp","Game",new {PlayerAction=PlayerAction.Knock, Id=Model.Game.GameId, PlayerId=Model.You.Guid.ToString() })">
+                    @if (!Model.Game.Players.Any(p => p.HasKnocked))
+                    {
+                    <a href="@Url.Action("PickUp", "Game", new { PlayerAction = PlayerAction.Knock, Id = Model.Game.GameId, PlayerId = Model.You.Guid.ToString() })">
                         <img src="~/images/knock.png" class="card selectablecard" />
                     </a>
+                    }
 
 
                 </div>
@@ -63,21 +49,23 @@
 
             </div>
         </div>
-        <div class="col-md-3">
-            <h4>Players:</h4>
-            <div class="list-group">
-                @foreach (var p in Model.Game.Players)
-                {
-                    <div class="list-group-item @((Model.Game.CurrentPlayer==p)?"active":"")">
-                        <h4>@p.Name</h4>
-                        @if (p.HasKnocked)
-                        {
-                            <span class="badge">Knocked</span>
-                        }
-                        <p class="list-group-item-text">@p.LastAction</p>
-                    </div>
-                }
-            </div>
+        <div class="col-md-5">
+            @if (HasTurn)
+            {
+            <h1 class="display-4">Your turn</h1>
+            }
+            else
+            {
+            <h1 class="display-4">@Model.Game.CurrentPlayer.Name turn</h1>
+            }
+            @if (!string.IsNullOrEmpty(Model.You.LastAction))
+            {
+            <p class="lead">You @Model.You.LastAction</p>
+            }
+            <hr />
+            <partial name="_PlayerList" model="Model.Game" />
+            <hr/>
+            <a href="@Url.Action("Status",new {Id=Model.Game.GameId})" target="_blank">Status View</a>
         </div>
 
     </div>

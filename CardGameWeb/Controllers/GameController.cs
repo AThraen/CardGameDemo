@@ -167,6 +167,28 @@ namespace CardGameWeb.Controllers
             return RedirectToAction("Index", new { Id = g.GameId, PlayerId = hp.Guid.ToString() });
         }
 
+        /// <summary>
+        /// Show a Game Status on a full screen view
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public IActionResult Status(int Id)
+        {
+            if (!_gameService.GameExist(Id))
+            {
+                //Game does not exist, redirect
+                return RedirectToAction("Index", "Home");
+            }
+            Game g = _gameService.LoadGame(Id);
+
+            if (g.State == GameState.GameOver)
+            {
+                return RedirectToAction("GameOver", new { Id = Id });
+            }
+
+            ViewBag.HideNavigation = true;
+            return View(g);
+        }
 
         public IActionResult Join(int GameId, string Name)
         {
@@ -182,6 +204,8 @@ namespace CardGameWeb.Controllers
                 //Add player to game
                 var Player = new HumanPlayer(Name);
                 g.Players.Add(Player);
+
+                if (g.Players.Count() > 7) g.StartGame();
 
                 _gameService.SaveGame(g);
                 return RedirectToAction("Index", new { Id = g.GameId, PlayerId = Player.Guid.ToString() });
