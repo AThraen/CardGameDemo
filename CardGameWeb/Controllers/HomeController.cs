@@ -10,8 +10,9 @@ namespace CardGameWeb.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(string id=null)
         {
+            ViewBag.GameId = id;
             return View();
         }
 
